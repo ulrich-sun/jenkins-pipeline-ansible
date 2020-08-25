@@ -47,6 +47,7 @@ pipeline {
                        expression { GIT_BRANCH == 'origin/master' }
                     }
                    steps {
+                       sh 'apt-get update'
                        sh 'apt-get install -y sshpass'
                        sh 'ansible-playbook  -i hosts.yml --vault-password-file vault.key  --extra-vars "ansible_sudo_pass=$SUDOPASS" deploy.yml'
                    }
