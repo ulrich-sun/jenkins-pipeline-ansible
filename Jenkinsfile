@@ -34,7 +34,7 @@ pipeline {
             stages {
                stage("Ping targeted hosts") {
                    steps {
-                       sh 'ansible -m ping -i hosts.yml --vault-password-file vault.key --extra-vars "ansible_sudo_pass=$SUDOPASS"'
+                       sh 'ansible all -m ping -i hosts.yml --vault-password-file vault.key --extra-vars "ansible_sudo_pass=$SUDOPASS"'
                    }
                }
                stage("Verify ansible playbook syntax") {
