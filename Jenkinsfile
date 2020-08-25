@@ -34,14 +34,22 @@ pipeline {
             stages {
                stage("Ping targeted hosts") {
                    steps {
-                       sh 'ansible all -m ping -i hosts --private-key id_rsa --extra-vars "ansible_sudo_pass=$SUDOPASS"'
+                       sh 'ansible all -m ping -i hosts.yml --vault-password-file vault.key --extra-vars "ansible_sudo_pass=$SUDOPASS"'
                    }
                }
                stage("Verify ansible playbook syntax") {
                    steps {
-                       sh 'ansible-lint -x 306 deploy.yml'
+                       sh 'ansible-lint deploy.yml'
                    }
                }
+               stage("Deploy app in production") {
+                    when {
+                       expression { GIT_BRANCH == 'origin/master' }
+                    }
+                   steps {
+                       sh 'ansible-playbook  -i hosts.yml --vault-password-file vault.key  --extra-vars "ansible_sudo_pass=$SUDOPASS" deploy.yml'
+                   }
+               } 
             }
           }
       }
