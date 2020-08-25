@@ -32,11 +32,11 @@ pipeline {
             }
             agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest' } }
             stages {
-               stage("Ping targeted hosts") {
-                   steps {
-                       sh 'ansible all -m ping -i hosts.yml --vault-password-file vault.key --extra-vars "ansible_sudo_pass=$SUDOPASS"'
-                   }
-               }
+               #stage("Ping targeted hosts") {
+               #    steps {
+               #        sh 'ansible all -m ping -i hosts.yml --vault-password-file vault.key --extra-vars "ansible_sudo_pass=$SUDOPASS"'
+               #    }
+               #}
                stage("Verify ansible playbook syntax") {
                    steps {
                        sh 'ansible-lint deploy.yml'
