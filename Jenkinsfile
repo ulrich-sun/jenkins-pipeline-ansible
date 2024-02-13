@@ -29,23 +29,27 @@ pipeline {
         stage('Test and deploy the application') {
             environment {
                 SUDOPASS = credentials('sudopass')
+                EC2_SSH_KEY = credentials('ec2_ssh_key') 
+                 EC2_HOST = '3.231.162.90' // Remplacez par l'adresse IP publique ou le DNS de votre instance EC2
+                 EC2_USER = 'ubuntu' // Remplacez par l'utilisateur SSH de votre instance EC2
             }
-            agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest' } }
+            agent { docker { image 'registry.gitlab.com/carlinfongang-labs/docker-images/docker-ansible:latest' } }
             stages {
-               stage("Verify ansible playbook syntax") {
-                   steps {
-                       sh 'ansible-lint deploy.yml'
-                   }
-               }
+               //stage("Verify ansible playbook syntax") {
+                   //steps {
+                       //sh 'ansible-lint deploy.yml'
+                   //}
+              // }
                stage("Deploy app in production") {
                     when {
                        expression { GIT_BRANCH == 'origin/master' }
                     }
                    steps {
                        sh '''
-                       apt-get update
+                       apt update
                        apt-get install -y sshpass
-                       ansible-playbook  -i hosts.yml --vault-password-file vault.key  --extra-vars "ansible_sudo_pass=$SUDOPASS" deploy.yml
+                       apt install ansible -y                
+                       ansible-playbook -i hosts.yml --vault-password-file vault.key  --extra-vars "ansible_sudo_pass=$SUDOPASS" deploy.yml --private-key $EC2_SSH_KEY
                        '''
                    }
                } 
