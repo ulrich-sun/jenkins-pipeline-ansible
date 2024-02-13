@@ -40,6 +40,7 @@ pipeline {
                stage ("Update ansible-lint")
                     steps {
                         sh 'pip install --upgrade ansible-lint'
+                    }
                stage("Verify ansible playbook syntax") {
                    steps {
                        sh 'ansible-lint deploy.yml'
