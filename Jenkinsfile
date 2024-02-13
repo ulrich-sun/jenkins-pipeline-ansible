@@ -37,12 +37,9 @@ pipeline {
             }
             agent { docker { image image 'registry.gitlab.com/carlinfongang-labs/docker-images/docker-ansible:latest' } }
             stages {
-               stage ("Update ansible-lint")
-                    steps {
-                        sh 'pip install --upgrade ansible-lint'
-                    }
                stage("Verify ansible playbook syntax") {
                    steps {
+                       sh 'pip install --upgrade ansible-lint'
                        sh 'ansible-lint deploy.yml'
                    }
                }
