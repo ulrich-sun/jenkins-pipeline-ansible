@@ -35,8 +35,11 @@ pipeline {
             environment {
                 SUDOPASS = credentials('sudopass')
             }
-            agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest' } }
+            agent { docker { image image 'registry.gitlab.com/carlinfongang-labs/docker-images/docker-ansible:latest' } }
             stages {
+               stage ("Update ansible-lint")
+                    steps {
+                        sh 'pip install --upgrade ansible-lint'
                stage("Verify ansible playbook syntax") {
                    steps {
                        sh 'ansible-lint deploy.yml'
